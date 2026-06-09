@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ContentKit — To do's</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-bottom: 24px;
+            cursor: pointer;
+            transition: color 0.15s;
+        }
+
+        .back-link:hover {
+            color: var(--text-primary);
+        }
+
+        .todo-check.klaar {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .todo-check.klaar::after {
+            content: '✓';
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            height: 100%;
+        }
+
+        .todo-item.klaar .todo-title {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+
+<body data-page="todos">
+
+    <div class="app-shell">
+        <aside class="sidebar">
+            <a href="../index.html" class="sidebar-logo"
+                style="text-decoration:none; color:var(--accent);">Dashboard</a>
+            <div class="sidebar-section">
+                <div class="sidebar-label">Projecten</div>
+                <a href="project-libema.html" class="sidebar-item">Libéma open</a>
+                <a href="project.html" class="sidebar-item">ZLM Tour</a>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-label tools">Tools</div>
+                <a href="inspiratie.html" class="sidebar-item">Inspiratie</a>
+                <a href="trendwatcher.html" class="sidebar-item">Trendwatcher</a>
+                <a href="analyse.html" class="sidebar-item">Analyse</a>
+                <a href="test-doelgroep/index.html" class="sidebar-item">Test doelgroep</a>
+                <a href="kennis-hub.html" class="sidebar-item">Kennis hub</a>
+                <a href="todos.html" class="sidebar-item" data-target="todos">To do's</a>
+            </div>
+        </aside>
+
+        <main class="main">
+            <a onclick="history.back()" class="back-link">← Terug</a>
+            <h1 class="page-title">To do's</h1>
+
+            <!-- Filter tabs -->
+            <div class="tab-bar" style="margin-bottom:24px;">
+                <button class="tab active" onclick="filterTaken('alle', this)">Alle</button>
+                <button class="tab" onclick="filterTaken('open', this)">Open</button>
+                <button class="tab" onclick="filterTaken('klaar', this)">Afgerond</button>
+            </div>
+
+            <!-- Vaste taken (hard-coded) -->
+            <section class="todo-lijst">
+
+                <div class="todo-item" data-status="open">
+                    <div class="todo-check" onclick="vinkAf(this)"></div>
+                    <div class="todo-content">
+                        <div class="todo-title">Website NTFU</div>
+                        <div class="todo-project">NTFU – Website</div>
+                    </div>
+                    <span class="todo-date">Morgen</span>
+                    <button onclick="this.closest('.todo-item').remove()"
+                        style="background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:16px; margin-left:12px;">✕</button>
+                </div>
+
+                <div class="todo-item" data-status="open">
+                    <div class="todo-check" onclick="vinkAf(this)"></div>
+                    <div class="todo-content">
+                        <div class="todo-title">Update Close</div>
+                        <div class="todo-project">Libéma open – App</div>
+                    </div>
+                    <span class="todo-date">Morgen</span>
+                    <button onclick="this.closest('.todo-item').remove()"
+                        style="background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:16px; margin-left:12px;">✕</button>
+                </div>
+
+            </section>
+
+            <!-- Toevoegen knop -->
+            <div style="display:flex; justify-content:center; margin-top:24px;">
+                <a href="todo-toevoegen.html" class="btn btn-dark">＋ TOEVOEGEN</a>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="../js/nav.js"></script>
+    <script>
+        // Laad taken uit localStorage
+        document.addEventListener('DOMContentLoaded', () => {
+            const lijst = document.querySelector('.todo-lijst');
+            const taken = JSON.parse(localStorage.getItem('taken') || '[]');
+            const toevoegKnop = document.querySelector('[style*="justify-content:center"]');
+
+            taken.forEach(t => {
+                if (t.teamlid && t.teamlid !== 'Luke') return;
+                const item = document.createElement('div');
+                item.className = 'todo-item';
+                item.setAttribute('data-status', 'open');
+                item.innerHTML = `
+          <div class="todo-check" onclick="vinkAf(this)"></div>
+          <div class="todo-content">
+            <div class="todo-title">${t.titel}</div>
+            <div class="todo-project">${t.project}${t.teamlid ? ' · ' + t.teamlid : ''}</div>
+            ${t.beschrijving ? `<div style="font-size:12px; color:var(--text-muted);">${t.beschrijving}</div>` : ''}
+          </div>
+          <span class="todo-date">${t.datum}</span>
+          <button onclick="verwijderTaak(this, '${t.titel}')"
+            style="background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:16px; margin-left:12px;">✕</button>
+        `;
+                lijst.appendChild(item);
+            });
+
+            // Herstel afgevinkte taken
+            const afgevinkt = JSON.parse(localStorage.getItem('afgevinkt') || '[]');
+            document.querySelectorAll('.todo-item').forEach(item => {
+                const titel = item.querySelector('.todo-title').textContent;
+                if (afgevinkt.includes(titel)) {
+                    item.classList.add('klaar');
+                    item.setAttribute('data-status', 'klaar');
+                    item.querySelector('.todo-check').classList.add('klaar');
+                }
+            });
+        });
+
+        function vinkAf(el) {
+            el.classList.toggle('klaar');
+            const item = el.closest('.todo-item');
+            item.classList.toggle('klaar');
+            item.setAttribute('data-status', item.classList.contains('klaar') ? 'klaar' : 'open');
+
+            const titel = item.querySelector('.todo-title').textContent;
+            const afgevinkt = JSON.parse(localStorage.getItem('afgevinkt') || '[]');
+            if (item.classList.contains('klaar')) {
+                if (!afgevinkt.includes(titel)) afgevinkt.push(titel);
+            } else {
+                afgevinkt.splice(afgevinkt.indexOf(titel), 1);
+            }
+            localStorage.setItem('afgevinkt', JSON.stringify(afgevinkt));
+
+            // Sorteer: open taken bovenaan, afgerond onderaan
+            sorteerTaken();
+        }
+
+        function sorteerTaken() {
+            const lijst = document.querySelector('.todo-lijst');
+            const items = Array.from(lijst.querySelectorAll('.todo-item'));
+
+            const open = items.filter(i => i.getAttribute('data-status') === 'open');
+            const klaar = items.filter(i => i.getAttribute('data-status') === 'klaar');
+
+            [...open, ...klaar].forEach(i => lijst.appendChild(i));
+        }
+
+        sorteerTaken();
+
+        function filterTaken(type, btn) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.todo-item').forEach(item => {
+                const status = item.getAttribute('data-status');
+                if (type === 'alle') item.style.display = '';
+                else item.style.display = status === type ? '' : 'none';
+            });
+        }
+    </script>
+</body>
+
+</html>

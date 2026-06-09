@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ContentKit — Test doelgroep · Resultaat</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <style>
+    .context-pills { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:24px; }
+    .context-pill { display:inline-flex; align-items:center; gap:6px; background:var(--card-bg); padding:6px 14px; border-radius:100px; font-size:13px; color:var(--text-secondary); }
+
+    /* Scores balk bovenaan */
+    .scores-balk {
+      display:grid; grid-template-columns:repeat(4, 1fr); gap:12px;
+      max-width:860px; margin-bottom:20px;
+    }
+    .score-tegel {
+      background:var(--card-bg); border-radius:12px; padding:16px 18px;
+      display:flex; flex-direction:column; gap:4px;
+    }
+    .score-tegel-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-secondary); }
+    .score-tegel-waarde { font-size:32px; font-weight:700; line-height:1; }
+    .score-tegel-sub { font-size:11px; color:var(--text-muted); }
+    .score-balk-bg { height:4px; background:var(--border); border-radius:100px; margin-top:8px; overflow:hidden; }
+    .score-balk-fill { height:100%; border-radius:100px; background:var(--accent); transition:width 1.2s ease; }
+
+    /* Resultaat grid */
+    .resultaat-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; max-width:860px; }
+
+    .feedback-card {
+      background:var(--card-bg); border-radius:14px; padding:24px 22px;
+      grid-column:span 2;
+    }
+    .feedback-titel { font-size:15px; font-weight:700; margin-bottom:14px; }
+    .feedback-blok { background:var(--bg); border-radius:10px; padding:14px 16px; margin-bottom:10px; font-size:14px; line-height:1.6; }
+    .feedback-blok-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:6px; }
+    .positief .feedback-blok-label { color:#4CAF50; }
+    .aandacht .feedback-blok-label { color:#FF5533; }
+    .suggestie .feedback-blok-label { color:#4A90D9; }
+
+    .content-preview {
+      background:var(--card-bg); border-radius:14px; padding:20px 22px;
+      grid-column:span 2;
+    }
+    .content-preview-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-muted); margin-bottom:10px; }
+    .content-preview-tekst { font-size:14px; line-height:1.7; color:var(--text-primary); font-style:italic; }
+
+    /* Persona header */
+    .persona-header {
+      display:flex; align-items:center; gap:14px;
+      background:var(--card-bg); border-radius:14px; padding:16px 22px;
+      max-width:860px; margin-bottom:20px;
+    }
+    .persona-avatar-lg { width:44px; height:44px; border-radius:50%; background:var(--border); display:flex; align-items:center; justify-content:center; font-size:20px; }
+    .persona-naam-lg { font-size:15px; font-weight:700; }
+    .persona-omschr { font-size:12px; color:var(--text-secondary); }
+
+    /* Laden */
+    .laden-state { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:60px 0; gap:16px; grid-column:span 2; }
+    .laden-spinner { width:36px; height:36px; border:3px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin 0.8s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .laden-tekst { font-size:14px; color:var(--text-secondary); }
+
+    .actie-rij { display:flex; gap:10px; margin-top:20px; max-width:860px; }
+  </style>
+</head>
+<body data-page="test-doelgroep">
+<div class="app-shell">
+  <aside class="sidebar">
+    <a href="../../index.html" class="sidebar-logo" style="text-decoration:none; color:var(--accent);">Dashboard</a>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Projecten</div>
+      <a href="../project-libema.html" class="sidebar-item">Libéma open</a>
+      <a href="../project.html" class="sidebar-item">ZLM Tour</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label tools">Tools</div>
+      <a href="../inspiratie.html" class="sidebar-item">Inspiratie</a>
+      <a href="../trendwatcher.html" class="sidebar-item">Trendwatcher</a>
+      <a href="../analyse.html" class="sidebar-item">Analyse</a>
+      <a href="index.html" class="sidebar-item active">Test doelgroep</a>
+      <a href="../kennis-hub.html" class="sidebar-item">Kennis hub</a>
+      <a href="../todos.html" class="sidebar-item">To do's</a>
+    </div>
+  </aside>
+
+  <main class="main">
+    <a onclick="history.back()" class="back-link">← Terug</a>
+    <h1 class="page-title">Resultaat</h1>
+    <p class="page-subtitle" id="resultaat-subtitel">Analyse wordt uitgevoerd…</p>
+
+    <div class="context-pills">
+      <div class="context-pill" id="pill-segment">📂 —</div>
+      <div class="context-pill" id="pill-persona">👤 —</div>
+      <div class="context-pill" id="pill-formaat" style="display:none;">📝 —</div>
+      <div class="context-pill" id="pill-platform" style="display:none;">📱 —</div>
+      <div class="context-pill" id="pill-filters" style="display:none;">🎯 —</div>
+    </div>
+
+    <!-- Scores balk (verborgen tot resultaat) -->
+    <div class="scores-balk" id="scores-balk" style="display:none;">
+      <div class="score-tegel">
+        <div class="score-tegel-label">Bereik score</div>
+        <div class="score-tegel-waarde" id="score-bereik">—</div>
+        <div class="score-tegel-sub">Potentieel bereik</div>
+        <div class="score-balk-bg"><div class="score-balk-fill" id="balk-bereik" style="width:0%"></div></div>
+      </div>
+      <div class="score-tegel">
+        <div class="score-tegel-label">Engagement</div>
+        <div class="score-tegel-waarde" id="score-engagement">—</div>
+        <div class="score-tegel-sub">Interactie verwacht</div>
+        <div class="score-balk-bg"><div class="score-balk-fill" id="balk-engagement" style="width:0%"></div></div>
+      </div>
+      <div class="score-tegel">
+        <div class="score-tegel-label">Relevantie</div>
+        <div class="score-tegel-waarde" id="score-relevantie">—</div>
+        <div class="score-tegel-sub">Past bij doelgroep</div>
+        <div class="score-balk-bg"><div class="score-balk-fill" id="balk-relevantie" style="width:0%"></div></div>
+      </div>
+      <div class="score-tegel">
+        <div class="score-tegel-label">Conversie</div>
+        <div class="score-tegel-waarde" id="score-conversie">—</div>
+        <div class="score-tegel-sub">Aanzet tot actie</div>
+        <div class="score-balk-bg"><div class="score-balk-fill" id="balk-conversie" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <div class="persona-header" id="persona-header" style="display:none;">
+      <div class="persona-avatar-lg" id="persona-emoji">👤</div>
+      <div>
+        <div class="persona-naam-lg" id="persona-naam-lg">—</div>
+        <div class="persona-omschr" id="persona-omschr">—</div>
+      </div>
+    </div>
+
+    <div class="resultaat-grid" id="resultaat-grid">
+      <div class="laden-state">
+        <div class="laden-spinner"></div>
+        <div class="laden-tekst" id="laden-tekst">Persona wordt geactiveerd…</div>
+      </div>
+    </div>
+
+    <div class="actie-rij" id="actie-rij" style="display:none;">
+      <a href="stap-3-content.html" class="btn btn-ghost">← Andere content testen</a>
+      <a href="stap-1-segment.html" class="btn btn-ghost">Opnieuw beginnen</a>
+      <a href="index.html" class="btn btn-primary">Klaar</a>
+    </div>
+  </main>
+</div>
+
+<script src="../../js/nav.js"></script>
+<script>
+  const segment      = sessionStorage.getItem('td_segment_label') || '—';
+  const persona      = sessionStorage.getItem('td_persona_label') || '—';
+  const personaKey   = sessionStorage.getItem('td_persona') || '';
+  const formaat      = sessionStorage.getItem('td_formaat');
+  const platform     = sessionStorage.getItem('td_platform');
+  const content      = sessionStorage.getItem('td_content') || '';
+  const context      = sessionStorage.getItem('td_context') || '';
+  const bestand      = sessionStorage.getItem('td_bestand') || '';
+  const filterLeeft  = sessionStorage.getItem('td_filter_leeftijd');
+  const filterGesl   = sessionStorage.getItem('td_filter_geslacht');
+  const filterMarkt  = sessionStorage.getItem('td_filter_markt');
+
+  document.getElementById('pill-segment').textContent = '📂 ' + segment;
+  document.getElementById('pill-persona').textContent = '👤 ' + persona;
+  if (formaat) { document.getElementById('pill-formaat').textContent = '📝 ' + formaat; document.getElementById('pill-formaat').style.display = 'inline-flex'; }
+  if (platform) { document.getElementById('pill-platform').textContent = platform; document.getElementById('pill-platform').style.display = 'inline-flex'; }
+  const filterParts = [filterLeeft, filterGesl, filterMarkt].filter(Boolean);
+  if (filterParts.length) { document.getElementById('pill-filters').textContent = '🎯 ' + filterParts.join(' · '); document.getElementById('pill-filters').style.display = 'inline-flex'; }
+
+  const personaData = {
+    yara:  { emoji:'👩', omschr:'22 jaar · Stagaire · TikTok & Instagram', stijl:'snel, visueel, kort en krachtig. Haakt snel af bij lange teksten.' },
+    tim:   { emoji:'👨', omschr:'24 jaar · Stagaire · Instagram & Reels',  stijl:'zoekt duidelijkheid en leerpunten. Waardeert uitleg en structuur.' },
+    niels: { emoji:'🎥', omschr:'28 jaar · Videograaf · YouTube',          stijl:'gericht op formats en structuur. Let op visuele vertaalbaarheid.' },
+    thijs: { emoji:'🎨', omschr:'31 jaar · Designer · LinkedIn',           stijl:'oog voor esthetiek en merkpresentatie. Kritisch op toon en branding.' },
+  };
+
+  const pd = personaData[personaKey] || { emoji:'👤', omschr:'—', stijl:'neutraal' };
+  document.getElementById('persona-emoji').textContent = pd.emoji;
+  document.getElementById('persona-naam-lg').textContent = persona;
+  document.getElementById('persona-omschr').textContent = pd.omschr;
+  document.getElementById('persona-header').style.display = 'flex';
+
+  const laadTexten = ['Persona wordt geactiveerd…', 'Content wordt geanalyseerd…', 'Scores worden berekend…', 'Feedback wordt opgesteld…'];
+  let laadIdx = 0;
+  const laadInterval = setInterval(() => {
+    laadIdx = (laadIdx + 1) % laadTexten.length;
+    const el = document.getElementById('laden-tekst');
+    if (el) el.textContent = laadTexten[laadIdx];
+  }, 1200);
+
+  async function voerTestUit() {
+    const filterContext = filterParts.length ? `Doelgroepfilters: ${filterParts.join(', ')}.` : '';
+    const bestandContext = bestand ? `Er is ook een visueel concept bijgevoegd (bestandsnaam: ${bestand}).` : '';
+
+    const prompt = `Je bent de persona "${persona}" — ${pd.stijl}
+Je beoordeelt de volgende social media content voor het platform ${platform || 'onbekend platform'}, in het format "${formaat || 'onbekend format'}", gericht op het segment "${segment}".
+${filterContext}
+${bestandContext}
+${context ? 'Extra context: ' + context : ''}
+
+Content om te beoordelen:
+"${content}"
+
+Geef je beoordeling ALLEEN als JSON (geen markdown, geen uitleg erbuiten):
+{
+  "score_bereik": <getal 1.0-10.0>,
+  "score_engagement": <getal 1.0-10.0>,
+  "score_relevantie": <getal 1.0-10.0>,
+  "score_conversie": <getal 1.0-10.0>,
+  "positief": "<wat werkt goed — max 2 zinnen>",
+  "aandacht": "<wat kan beter — max 2 zinnen>",
+  "suggestie": "<concrete herschrijftip — max 2 zinnen>",
+  "samenvatting": "<één zin als overall oordeel van de persona>"
+}`;
+
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+
+      const data = await res.json();
+      clearInterval(laadInterval);
+      const raw = data.content.map(b => b.text || '').join('');
+      const clean = raw.replace(/```json|```/g, '').trim();
+      const r = JSON.parse(clean);
+
+      document.getElementById('resultaat-subtitel').textContent = `"${r.samenvatting}"`;
+      renderScores(r);
+      renderResultaat(r);
+
+    } catch(e) {
+      clearInterval(laadInterval);
+      renderFallback();
+    }
+  }
+
+  function renderScores(r) {
+    document.getElementById('scores-balk').style.display = 'grid';
+    const scores = [
+      { id: 'bereik',     val: r.score_bereik },
+      { id: 'engagement', val: r.score_engagement },
+      { id: 'relevantie', val: r.score_relevantie },
+      { id: 'conversie',  val: r.score_conversie },
+    ];
+    scores.forEach(s => {
+      document.getElementById('score-' + s.id).textContent = s.val.toFixed(1);
+      setTimeout(() => {
+        document.getElementById('balk-' + s.id).style.width = (s.val * 10) + '%';
+      }, 100);
+    });
+  }
+
+  function renderResultaat(r) {
+    document.getElementById('resultaat-grid').innerHTML = `
+      <div class="feedback-card">
+        <div class="feedback-titel">💬 Feedback van ${persona}</div>
+        <div class="feedback-blok positief">
+          <div class="feedback-blok-label">✓ Wat werkt</div>
+          ${r.positief}
+        </div>
+        <div class="feedback-blok aandacht">
+          <div class="feedback-blok-label">⚠ Aandachtspunt</div>
+          ${r.aandacht}
+        </div>
+        <div class="feedback-blok suggestie">
+          <div class="feedback-blok-label">→ Suggestie</div>
+          ${r.suggestie}
+        </div>
+      </div>
+      <div class="content-preview">
+        <div class="content-preview-label">Geteste content</div>
+        <div class="content-preview-tekst">${content ? content.replace(/\n/g,'<br>') : '<span style="color:var(--text-muted); font-style:normal;">Alleen visueel concept geupload</span>'}</div>
+      </div>
+    `;
+    document.getElementById('actie-rij').style.display = 'flex';
+  }
+
+  function renderFallback() {
+    document.getElementById('resultaat-subtitel').textContent = 'Analyse niet beschikbaar.';
+    document.getElementById('resultaat-grid').innerHTML = `
+      <div style="grid-column:span 2; padding:40px 0; text-align:center; color:var(--text-muted);">
+        <div style="font-size:32px; margin-bottom:12px;">⚠️</div>
+        <div>De AI-analyse kon niet worden uitgevoerd. Controleer je verbinding.</div>
+        <button onclick="location.reload()" class="btn btn-primary" style="margin-top:20px;">Opnieuw proberen</button>
+      </div>`;
+    document.getElementById('actie-rij').style.display = 'flex';
+  }
+
+  voerTestUit();
+</script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ContentKit — Test doelgroep</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <style>
+    /* ---- Keuze kaarten ---- */
+    .keuze-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      max-width: 680px;
+      margin-top: 32px;
+    }
+
+    .keuze-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 32px 24px;
+      cursor: pointer;
+      text-decoration: none;
+      color: var(--text-primary);
+      font-size: 16px;
+      font-weight: 500;
+      transition: background 0.15s, transform 0.1s;
+      display: block;
+    }
+
+    .keuze-card:hover {
+      background: var(--border);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+
+<body data-page="test-doelgroep">
+
+  <div class="app-shell">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <a href="../../index.html" class="sidebar-logo" style="text-decoration:none; color:var(--accent);">Dashboard</a>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Projecten</div>
+        <a href="../project-libema.html" class="sidebar-item" data-target="project-libema">Libéma open</a>
+        <a href="../project.html" class="sidebar-item" data-target="project-zlm">ZLM Tour</a>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label tools">Tools</div>
+        <a href="../inspiratie.html" class="sidebar-item" data-target="inspiratie">Inspiratie</a>
+        <a href="../trendwatcher.html" class="sidebar-item" data-target="trendwatcher">Trendwatcher</a>
+        <a href="../analyse.html" class="sidebar-item" data-target="analyse">Analyse</a>
+        <a href="index.html" class="sidebar-item" data-target="test-doelgroep">Test doelgroep</a>
+        <a href="../kennis-hub.html" class="sidebar-item" data-target="kennis-hub">Kennis hub</a>
+        <a href="todos.html" class="sidebar-item" data-target="todos">To do's</a>
+      </div>
+    </aside>
+
+    <!-- Hoofdinhoud -->
+    <main class="main">
+
+      <a onclick="history.back()" class="back-link">← Terug</a>
+
+
+      <h1 class="page-title">Test doelgroep</h1>
+      <p class="page-subtitle">Wat wil je doen?</p>
+
+      <div class="keuze-grid">
+        <a href="stap-1-segment.html" class="keuze-card">
+          Persona testen
+        </a>
+        <a href="verg-stap-1-project.html" class="keuze-card">
+          Doelgroep vergelijken met ander event
+        </a>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="../../js/nav.js"></script>
+</body>
+
+</html>
