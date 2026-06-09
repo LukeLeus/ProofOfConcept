@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ContentKit — Doelgroep vergelijken</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <style>
+    .stap-badge { font-size:12px; font-weight:600; color:var(--accent); background:rgba(255,85,51,0.1); padding:4px 10px; border-radius:100px; display:inline-block; margin-bottom:8px; }
+
+    .vergelijk-layout { display:grid; grid-template-columns:1fr 1fr; gap:24px; max-width:800px; margin-top:28px; }
+
+    .event-kolom { display:flex; flex-direction:column; gap:10px; }
+    .event-kolom-label { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-secondary); margin-bottom:4px; }
+
+    .event-card {
+      background:var(--card-bg); border-radius:12px; padding:16px 18px;
+      cursor:pointer; border:2px solid transparent;
+      transition:border-color 0.15s, transform 0.1s;
+      display:flex; align-items:center; gap:12px;
+    }
+    .event-card:hover { border-color:var(--accent); transform:translateY(-1px); }
+    .event-card.geselecteerd { border-color:var(--accent); background:rgba(255,85,51,0.06); }
+    .event-icon { font-size:22px; width:36px; text-align:center; }
+    .event-naam { font-size:14px; font-weight:600; }
+    .event-type { font-size:12px; color:var(--text-muted); }
+
+    .pijl { display:flex; align-items:center; justify-content:center; font-size:28px; color:var(--text-muted); padding-top:60px; }
+
+    .actie-rij { display:flex; gap:10px; margin-top:28px; max-width:800px; }
+
+    .geselecteerd-indicator {
+      background:var(--card-bg); border-radius:10px; padding:10px 14px;
+      font-size:13px; color:var(--text-secondary); margin-top:4px;
+      min-height:42px; display:flex; align-items:center; gap:8px;
+    }
+    .geselecteerd-indicator.gevuld { color:var(--text-primary); font-weight:500; }
+  </style>
+</head>
+<body data-page="test-doelgroep">
+<div class="app-shell">
+  <aside class="sidebar">
+    <a href="../../index.html" class="sidebar-logo" style="text-decoration:none; color:var(--accent);">Dashboard</a>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Projecten</div>
+      <a href="../project-libema.html" class="sidebar-item">Libéma open</a>
+      <a href="../project.html" class="sidebar-item">ZLM Tour</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label tools">Tools</div>
+      <a href="../inspiratie.html" class="sidebar-item">Inspiratie</a>
+      <a href="../trendwatcher.html" class="sidebar-item">Trendwatcher</a>
+      <a href="../analyse.html" class="sidebar-item">Analyse</a>
+      <a href="index.html" class="sidebar-item active">Test doelgroep</a>
+      <a href="../kennis-hub.html" class="sidebar-item">Kennis hub</a>
+      <a href="../todos.html" class="sidebar-item">To do's</a>
+    </div>
+  </aside>
+
+  <main class="main">
+    <a onclick="history.back()" class="back-link">← Terug</a>
+
+    <span class="stap-badge">Doelgroep vergelijken</span>
+    <h1 class="page-title">Kies twee events</h1>
+    <p class="page-subtitle">Welke doelgroepen wil je met elkaar vergelijken?</p>
+
+    <div class="vergelijk-layout">
+
+      <div class="event-kolom">
+        <div class="event-kolom-label">Event A</div>
+        <div class="event-card" onclick="kiesEvent(this, 'a', 'Libéma Open', '🎾', 'Tennis · 's-Hertogenbosch')">
+          <div class="event-icon">🎾</div>
+          <div><div class="event-naam">Libéma Open</div><div class="event-type">Tennis · 's-Hertogenbosch</div></div>
+        </div>
+        <div class="event-card" onclick="kiesEvent(this, 'a', 'ZLM Tour', '🚴', 'Wielrennen · Zeeland & Brabant')">
+          <div class="event-icon">🚴</div>
+          <div><div class="event-naam">ZLM Tour</div><div class="event-type">Wielrennen · Zeeland & Brabant</div></div>
+        </div>
+        <div class="event-card" onclick="kiesEvent(this, 'a', 'Amsterdam Marathon', '🏃', 'Hardlopen · Amsterdam')">
+          <div class="event-icon">🏃</div>
+          <div><div class="event-naam">Amsterdam Marathon</div><div class="event-type">Hardlopen · Amsterdam</div></div>
+        </div>
+        <div class="event-card" onclick="kiesEvent(this, 'a', 'Dutch Grand Prix', '🏎️', 'Formule 1 · Zandvoort')">
+          <div class="event-icon">🏎️</div>
+          <div><div class="event-naam">Dutch Grand Prix</div><div class="event-type">Formule 1 · Zandvoort</div></div>
+        </div>
+        <div class="geselecteerd-indicator" id="keuze-a">Nog geen event gekozen</div>
+      </div>
+
+      <div class="pijl">⇄</div>
+
+      <div class="event-kolom">
+        <div class="event-kolom-label">Event B</div>
+        <div class="event-card" onclick="kiesEvent(this, 'b', 'Libéma Open', '🎾', 'Tennis · 's-Hertogenbosch')">
+          <div class="event-icon">🎾</div>
+          <div><div class="event-naam">Libéma Open</div><div class="event-type">Tennis · 's-Hertogenbosch</div></div>
+        </div>
+        <div class="event-card" onclick="kiesEvent(this, 'b', 'ZLM Tour', '🚴', 'Wielrennen · Zeeland & Brabant')">
+          <div class="event-icon">🚴</div>
+          <div><div class="event-naam">ZLM Tour</div><div class="event-type">Wielrennen · Zeeland & Brabant</div></div>
+        </div>
+        <div class="event-card" onclick="kiesEvent(this, 'b', 'Amsterdam Marathon', '🏃', 'Hardlopen · Amsterdam')">
+          <div class="event-icon">🏃</div>
+          <div><div class="event-naam">Amsterdam Marathon</div><div class="event-type">Hardlopen · Amsterdam</div></div>
+        </div>
+        <div class="event-card" onclick="kiesEvent(this, 'b', 'Dutch Grand Prix', '🏎️', 'Formule 1 · Zandvoort')">
+          <div class="event-icon">🏎️</div>
+          <div><div class="event-naam">Dutch Grand Prix</div><div class="event-type">Formule 1 · Zandvoort</div></div>
+        </div>
+        <div class="geselecteerd-indicator" id="keuze-b">Nog geen event gekozen</div>
+      </div>
+
+    </div>
+
+    <div class="actie-rij">
+      <button class="btn btn-primary" id="volgende-btn" disabled onclick="gaNaarVergelijking()">Vergelijken →</button>
+      <a href="index.html" class="btn btn-ghost">Annuleren</a>
+    </div>
+  </main>
+</div>
+
+<script src="../../js/nav.js"></script>
+<script>
+  let keuzeA = null, keuzeB = null;
+
+  function kiesEvent(el, kant, naam, icon, type) {
+    const kolom = kant === 'a' ? 0 : 1;
+    const kaarten = document.querySelectorAll('.event-kolom')[kolom].querySelectorAll('.event-card');
+    kaarten.forEach(c => c.classList.remove('geselecteerd'));
+    el.classList.add('geselecteerd');
+
+    const indicator = document.getElementById('keuze-' + kant);
+    indicator.textContent = icon + ' ' + naam;
+    indicator.classList.add('gevuld');
+
+    if (kant === 'a') {
+      keuzeA = { naam, icon, type };
+      sessionStorage.setItem('verg_a', JSON.stringify(keuzeA));
+    } else {
+      keuzeB = { naam, icon, type };
+      sessionStorage.setItem('verg_b', JSON.stringify(keuzeB));
+    }
+
+    if (keuzeA && keuzeB) {
+      document.getElementById('volgende-btn').disabled = false;
+    }
+  }
+
+  function gaNaarVergelijking() {
+    window.location.href = 'vergelijk-resultaat.html';
+  }
+</script>
+</body>
+</html>

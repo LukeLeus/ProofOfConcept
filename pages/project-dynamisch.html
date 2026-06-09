@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ContentKit — Project</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      margin-bottom: 16px;
+      transition: color 0.15s;
+      cursor: pointer;
+    }
+    .back-link:hover { color: var(--text-primary); }
+
+    .project-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .project-header h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--blue);
+      margin-bottom: 2px;
+    }
+    .project-fase-label {
+      font-size: 16px;
+      color: var(--text-secondary);
+    }
+
+    .fase-segmenten {
+      display: flex;
+      gap: 5px;
+      height: 9px;
+      margin-bottom: 6px;
+    }
+    .fase-seg {
+      flex: 1;
+      border-radius: 100px;
+      cursor: pointer;
+      opacity: 0.3;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .fase-seg.actief { opacity: 1; }
+    .fase-seg:hover { opacity: 0.75; transform: scaleY(1.3); }
+
+    .fase-labels { display: flex; margin-bottom: 4px; }
+    .fase-lbl {
+      flex: 1;
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: center;
+      cursor: pointer;
+      padding: 2px 0;
+      transition: color 0.15s;
+      font-weight: 500;
+    }
+    .fase-lbl:hover { color: var(--text-secondary); }
+    .fase-lbl.huidig { color: var(--blue); font-weight: 700; }
+
+    .fase-omschrijving {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-style: italic;
+      min-height: 18px;
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+    .tool-kaart {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.14s, border-color 0.14s;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+    .tool-kaart:hover { background: var(--border); }
+
+    .sections-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .section-block {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .section-block > div:first-child {
+      min-height: 48px;
+      align-items: center;
+    }
+
+    .list-item {
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 13px;
+    }
+    .list-item-title { font-weight: 600; font-size: 12px; }
+    .list-item-sub { font-size: 11px; color: var(--text-muted); }
+
+    .section-block .todo-item { padding: 10px 14px; font-size: 13px; }
+    .section-block .todo-title { font-size: 13px; }
+    .section-block .todo-project { font-size: 11px; }
+    .section-block .todo-check { width: 16px; height: 16px; }
+    .section-block .todo-date { font-size: 11px; }
+
+    .todo-check.klaar {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+    .todo-check.klaar::after {
+      content: '✓';
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      height: 100%;
+    }
+    .todo-item.klaar .todo-title {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+
+    .leeg-melding {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-style: italic;
+      padding: 12px 0;
+    }
+
+    .nieuwsbrief-scroll {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .nieuwsbrief-thumb {
+      min-width: 200px;
+      height: 260px;
+      background: var(--card-bg);
+      border-radius: 10px;
+      overflow: hidden;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+
+<body data-page="project-dynamisch">
+
+  <div class="app-shell">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <a href="../index.html" class="sidebar-logo" style="text-decoration:none; color:var(--accent);">Dashboard</a>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Projecten</div>
+        <a href="project-libema.html" class="sidebar-item" data-target="project-libema">Libéma open</a>
+        <a href="project.html" class="sidebar-item" data-target="project-zlm">ZLM Tour</a>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label tools">Tools</div>
+        <a href="inspiratie.html" class="sidebar-item" data-target="inspiratie">Inspiratie</a>
+        <a href="trendwatcher.html" class="sidebar-item" data-target="trendwatcher">Trendwatcher</a>
+        <a href="analyse.html" class="sidebar-item" data-target="analyse">Analyse</a>
+        <a href="test-doelgroep/index.html" class="sidebar-item" data-target="test-doelgroep">Test doelgroep</a>
+        <a href="kennis-hub.html" class="sidebar-item" data-target="kennis-hub">Kennis hub</a>
+        <a href="todos.html" class="sidebar-item" data-target="todos">To do's</a>
+      </div>
+    </aside>
+
+    <!-- Hoofdinhoud -->
+    <main class="main">
+
+      <a onclick="history.back()" class="back-link">← Terug</a>
+
+      <!-- Project header -->
+      <div class="project-header">
+        <div>
+          <h1 id="project-naam-titel">—</h1>
+          <span class="project-fase-label">Fase: <span id="fase-nr">1</span></span>
+        </div>
+        <div style="width:360px;">
+          <div class="fase-segmenten">
+            <div class="fase-seg" id="fs1" style="background:#7B9FC4;" onclick="kiesFase(1)"></div>
+            <div class="fase-seg" id="fs2" style="background:#3A6EA8;" onclick="kiesFase(2)"></div>
+            <div class="fase-seg" id="fs3" style="background:#8BAF7A;" onclick="kiesFase(3)"></div>
+            <div class="fase-seg" id="fs4" style="background:#A8C48A;" onclick="kiesFase(4)"></div>
+          </div>
+          <div class="fase-labels">
+            <div class="fase-lbl" id="fl1" onclick="kiesFase(1)">Oriëntatie</div>
+            <div class="fase-lbl" id="fl2" onclick="kiesFase(2)">Overweging</div>
+            <div class="fase-lbl" id="fl3" onclick="kiesFase(3)">Actie</div>
+            <div class="fase-lbl" id="fl4" onclick="kiesFase(4)">Loyaliteit</div>
+          </div>
+        </div>
+      </div>
+
+      <p class="fase-omschrijving" id="fase-omschrijving"></p>
+
+      <!-- Tools (wisselt per fase) -->
+      <div class="tools-grid" id="tools-grid"></div>
+
+      <!-- Twee-koloms secties -->
+      <div class="sections-grid">
+
+        <!-- TO DO -->
+        <div class="section-block">
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <button class="btn btn-primary">TO DO</button>
+            <a id="todo-toevoegen-link" href="todo-toevoegen.html" class="btn btn-ghost" style="font-size:12px; padding:8px 14px;">＋ Toevoegen</a>
+            <a id="todo-alle-link" href="todos.html" class="btn btn-ghost" style="font-size:12px; padding:8px 14px;">Alle to do's →</a>
+          </div>
+          <div id="todo-lijst">
+            <p class="leeg-melding">Nog geen taken. Voeg een to do toe.</p>
+          </div>
+        </div>
+
+        <!-- ANALYSE -->
+        <div class="section-block">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <a href="analyse.html" class="btn btn-primary" style="text-decoration:none;">Analyse</a>
+          </div>
+          <div class="card" id="analyse-preview">
+            <div class="grid-2" style="gap:10px; margin-bottom:0;">
+              <div style="background:var(--bg); border-radius:8px; padding:12px;">
+                <div style="font-size:11px; color:var(--text-muted); margin-bottom:4px;">Views</div>
+                <div style="font-size:20px; font-weight:700;">—</div>
+                <div style="font-size:11px; color:var(--text-muted);">Nog geen data</div>
+              </div>
+              <div style="background:var(--bg); border-radius:8px; padding:12px;">
+                <div style="font-size:11px; color:var(--text-muted); margin-bottom:4px;">Interactions</div>
+                <div style="font-size:20px; font-weight:700;">—</div>
+                <div style="font-size:11px; color:var(--text-muted);">Nog geen data</div>
+              </div>
+              <div style="background:var(--bg); border-radius:8px; padding:12px;">
+                <div style="font-size:11px; color:var(--text-muted); margin-bottom:4px;">Visits</div>
+                <div style="font-size:20px; font-weight:700;">—</div>
+                <div style="font-size:11px; color:var(--text-muted);">Nog geen data</div>
+              </div>
+              <div style="background:var(--bg); border-radius:8px; padding:12px;">
+                <div style="font-size:11px; color:var(--text-muted); margin-bottom:4px;">Follows</div>
+                <div style="font-size:20px; font-weight:700;">—</div>
+                <div style="font-size:11px; color:var(--text-muted);">Nog geen data</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TEAM -->
+        <div class="section-block">
+          <button class="btn btn-primary" style="align-self:flex-start;">Team</button>
+          <div class="card" id="team-lijst">
+            <p class="leeg-melding">Geen teamleden toegevoegd.</p>
+          </div>
+        </div>
+
+        <!-- PARTNERS -->
+        <div class="section-block">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <button class="btn btn-primary">Partners</button>
+            <button class="btn btn-ghost" style="font-size:12px; padding:8px 14px;"
+              onclick="document.getElementById('partner-form').style.display='flex'">＋ Partner toevoegen</button>
+          </div>
+          <div class="card" style="min-height:120px;">
+            <div id="partners-lijst" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
+              <p class="leeg-melding" id="partners-leeg">Nog geen partners toegevoegd.</p>
+            </div>
+            <div id="partner-form" style="display:none; flex-direction:column; gap:8px; margin-top:8px;">
+              <input type="text" id="partner-naam" placeholder="Naam partner"
+                style="padding:8px 12px; border-radius:8px; border:1px solid var(--border); font-family:inherit; font-size:13px; background:var(--bg);">
+              <input type="text" id="partner-rol" placeholder="Rol (bijv. Hoofdsponsor)"
+                style="padding:8px 12px; border-radius:8px; border:1px solid var(--border); font-family:inherit; font-size:13px; background:var(--bg);">
+              <div style="display:flex; gap:8px;">
+                <button class="btn btn-primary" style="font-size:13px; padding:8px 16px;" onclick="voegPartnerToe()">Toevoegen</button>
+                <button class="btn btn-ghost" style="font-size:13px; padding:8px 16px;"
+                  onclick="document.getElementById('partner-form').style.display='none'">Annuleren</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /sections-grid -->
+
+      <!-- NIEUWSBRIEF -->
+      <div class="mt-32">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
+          <button class="btn btn-primary">Nieuwsbrief</button>
+          <a href="nieuwsbrief-toevoegen.html" class="btn btn-ghost" style="font-size:12px; padding:8px 14px;">＋ Nieuwe nieuwsbrief</a>
+        </div>
+        <div class="nieuwsbrief-scroll" id="nieuwsbrief-scroll">
+          <div class="nieuwsbrief-thumb img-placeholder"><span>Nog geen nieuwsbrieven</span></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="../js/nav.js"></script>
+  <script>
+    // ── URL param uitlezen ──────────────────────────────────────────
+    const params = new URLSearchParams(window.location.search);
+    const projectNaam = params.get('naam') || 'Onbekend project';
+
+    // ── Project details laden uit localStorage ──────────────────────
+    const details = JSON.parse(localStorage.getItem('projectDetails') || '{}');
+    const project = details[projectNaam] || {};
+    const startFase = parseInt(project.fase) || 1;
+
+    // ── Header invullen ─────────────────────────────────────────────
+    document.getElementById('project-naam-titel').textContent = projectNaam;
+    document.title = 'ContentKit — ' + projectNaam;
+
+    // ── To do link updaten ──────────────────────────────────────────
+    document.getElementById('todo-toevoegen-link').href =
+      'todo-toevoegen.html?project=' + encodeURIComponent(projectNaam);
+    document.getElementById('todo-alle-link').href =
+      'project-taken.html?project=' + encodeURIComponent(projectNaam);
+
+    // ── Fase data ───────────────────────────────────────────────────
+    const faseData = {
+     1: {
+        label: 'Oriëntatie',
+        omschrijving: 'Tip: Focus op bewustwording en bereik. Gebruik brede formats en zorg voor consistentie in tone of voice.',
+        tools: [
+          { i: '', n: 'Inspiratie', href: 'inspiratie.html' },
+          { i: '', n: 'Doelgroep testen', href: 'test-doelgroep/index.html' },
+          { i: '', n: 'Trendwatcher', href: 'trendwatcher.html' },
+        ]
+      },
+      2: {
+        label: 'Overweging',
+        omschrijving: 'Tip: Verdiep de verbinding met je doelgroep. Gebruik engagement-formats, polls en informatieve content.',
+        tools: [
+          { i: '', n: 'Analyse', href: 'analyse.html' },
+          { i: '', n: 'Inspiratie', href: 'inspiratie.html' },
+          { i: '', n: 'Content plan', href: null },
+        ]
+      },
+      3: {
+        label: 'Actie',
+        omschrijving: "Tip: Stuur op conversie. Gebruik duidelijke CTA's, urgentie en social proof.",
+        tools: [
+          { i: '', n: 'CTA generator', href: null },
+          { i: '', n: 'Analyse', href: 'analyse.html' },
+        ]
+      },
+      4: {
+        label: 'Loyaliteit',
+        omschrijving: 'Tip: Bind je publiek. Stimuleer ambassadeurs, deel behind-the-scenes en bouw een community.',
+        tools: [
+          { i: '', n: 'Analyse', href: 'analyse.html' },
+          { i: '', n: 'Nieuwsbrief', href: null },
+        ]
+      }
+    };
+
+    function kiesFase(nr) {
+      for (let i = 1; i <= 4; i++) {
+        document.getElementById('fs' + i).classList.toggle('actief', i === nr);
+        document.getElementById('fl' + i).classList.toggle('huidig', i === nr);
+      }
+      document.getElementById('fase-nr').textContent = nr;
+      document.getElementById('fase-omschrijving').textContent = faseData[nr].omschrijving;
+
+      const grid = document.getElementById('tools-grid');
+      grid.innerHTML = faseData[nr].tools.map(t => {
+        const tag = t.href ? 'a' : 'div';
+        const href = t.href ? `href="${t.href}"` : '';
+        return `<${tag} class="tool-kaart" ${href}>${t.n}</${tag}>`;
+      }).join('');
+    }
+
+    kiesFase(startFase);
+
+    // ── Teamleden renderen ──────────────────────────────────────────
+    const teamPerProject = JSON.parse(localStorage.getItem('teamPerProject') || '{}');
+    const teamleden = teamPerProject[projectNaam] || project.teamleden || [];
+    const teamLijst = document.getElementById('team-lijst');
+
+    if (teamleden.length > 0) {
+      teamLijst.innerHTML = teamleden.map(l => `
+        <div class="list-item" style="margin-bottom:8px;">
+          <div class="list-item-title">${l}</div>
+          <div class="list-item-sub">Teamlid</div>
+        </div>
+      `).join('');
+    }
+
+    // ── To do's renderen ────────────────────────────────────────────
+    const taken = JSON.parse(localStorage.getItem('taken') || '[]');
+    const projectTaken = taken.filter(t => t.project === projectNaam);
+    const todoLijst = document.getElementById('todo-lijst');
+
+    if (projectTaken.length > 0) {
+      todoLijst.innerHTML = projectTaken.map((t, i) => `
+        <div class="todo-item" id="todo-${i}">
+          <div class="todo-check" onclick="vinkAf(this)"></div>
+          <div class="todo-content">
+            <div class="todo-title">${t.titel}</div>
+            <div class="todo-project">${t.project}${t.teamlid ? ' · ' + t.teamlid : ''}</div>
+          </div>
+          <span class="todo-date">${t.datum || ''}</span>
+          <button onclick="this.closest('.todo-item').remove()"
+            style="background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:16px; margin-left:12px;">✕</button>
+        </div>
+      `).join('');
+    }
+
+    // ── Partners laden (opgeslagen per project) ─────────────────────
+    const partnersPerProject = JSON.parse(localStorage.getItem('partnersPerProject') || '{}');
+    const opgeslagenPartners = partnersPerProject[projectNaam] || [];
+
+    if (opgeslagenPartners.length > 0) {
+      document.getElementById('partners-leeg').style.display = 'none';
+      opgeslagenPartners.forEach(p => renderPartnerKaart(p.naam, p.rol));
+    }
+
+    // ── Partner functies ────────────────────────────────────────────
+    function renderPartnerKaart(naam, rol) {
+      const div = document.createElement('div');
+      div.style.cssText = 'position:relative; display:flex; flex-direction:column; gap:2px; padding:10px 14px; background:var(--bg); border-radius:10px; min-width:160px;';
+      div.innerHTML = `
+        <span style="font-size:13px; font-weight:600;">${naam}</span>
+        <span style="font-size:11px; color:var(--text-muted);">${rol}</span>
+        <button onclick="verwijderPartner(this, '${naam}')"
+          style="position:absolute; top:6px; right:8px; background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:12px;">✕</button>
+      `;
+      document.getElementById('partners-lijst').appendChild(div);
+    }
+
+    function voegPartnerToe() {
+      const naam = document.getElementById('partner-naam').value.trim();
+      const rol = document.getElementById('partner-rol').value.trim();
+      if (!naam) return;
+
+      document.getElementById('partners-leeg').style.display = 'none';
+      renderPartnerKaart(naam, rol);
+
+      // Opslaan in localStorage
+      const pp = JSON.parse(localStorage.getItem('partnersPerProject') || '{}');
+      if (!pp[projectNaam]) pp[projectNaam] = [];
+      pp[projectNaam].push({ naam, rol });
+      localStorage.setItem('partnersPerProject', JSON.stringify(pp));
+
+      document.getElementById('partner-naam').value = '';
+      document.getElementById('partner-rol').value = '';
+      document.getElementById('partner-form').style.display = 'none';
+    }
+
+    function verwijderPartner(btn, naam) {
+      btn.closest('div[style]').remove();
+      const pp = JSON.parse(localStorage.getItem('partnersPerProject') || '{}');
+      if (pp[projectNaam]) {
+        pp[projectNaam] = pp[projectNaam].filter(p => p.naam !== naam);
+        localStorage.setItem('partnersPerProject', JSON.stringify(pp));
+      }
+    }
+
+    // ── Vink af ─────────────────────────────────────────────────────
+    function vinkAf(el) {
+      el.classList.toggle('klaar');
+      const item = el.closest('.todo-item');
+      item.classList.toggle('klaar');
+      if (item.classList.contains('klaar')) {
+        setTimeout(() => item.style.display = 'none', 400);
+      } else {
+        item.style.display = '';
+      }
+    }
+  </script>
+</body>
+
+</html>

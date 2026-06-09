@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ContentKit — Nieuwsbrief schrijven</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      margin-bottom: 24px;
+      cursor: pointer;
+    }
+
+    .back-link:hover {
+      color: var(--text-primary);
+    }
+
+    .editor-wrap {
+      max-width: 680px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .editor-toolbar {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      padding: 10px;
+      background: var(--card-bg);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    .toolbar-btn {
+      padding: 5px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      font-size: 13px;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: background 0.12s;
+    }
+
+    .toolbar-btn:hover {
+      background: var(--border);
+    }
+
+    .editor-body {
+      min-height: 400px;
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg);
+      font-size: 15px;
+      line-height: 1.7;
+      outline: none;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .editor-body:empty::before {
+      content: 'Schrijf hier je nieuwsbrief...';
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+
+<body data-page="project-zlm">
+
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a href="../index.html" class="sidebar-logo" style="text-decoration:none; color:var(--accent);">Dashboard</a>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Projecten</div>
+        <a href="project-libema.html" class="sidebar-item">Libéma open</a>
+        <a href="project.html" class="sidebar-item">ZLM Tour</a>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label tools">Tools</div>
+        <a href="inspiratie.html" class="sidebar-item">Inspiratie</a>
+        <a href="trendwatcher.html" class="sidebar-item">Trendwatcher</a>
+        <a href="analyse.html" class="sidebar-item">Analyse</a>
+        <a href="test-doelgroep/index.html" class="sidebar-item">Test doelgroep</a>
+        <a href="kennis-hub.html" class="sidebar-item">Kennis hub</a>
+        <a href="todos.html" class="sidebar-item">To do's</a>
+      </div>
+    </aside>
+
+    <main class="main">
+      <a onclick="history.back()" class="back-link">← Terug</a>
+      <h1 class="page-title">Nieuwsbrief schrijven</h1>
+
+      <div class="editor-wrap">
+
+        <input type="text" id="nb-titel" placeholder="Onderwerp / titel"
+          style="padding:12px 16px; border-radius:10px; border:1px solid var(--border); font-family:'DM Sans',sans-serif; font-size:15px; background:var(--bg);">
+
+        <!-- Toolbar -->
+        <div class="editor-toolbar">
+          <button class="toolbar-btn" onclick="format('bold')"><b>B</b></button>
+          <button class="toolbar-btn" onclick="format('italic')"><i>I</i></button>
+          <button class="toolbar-btn" onclick="format('underline')"><u>U</u></button>
+          <button class="toolbar-btn" onclick="format('insertUnorderedList')">• Lijst</button>
+          <button class="toolbar-btn" onclick="format('insertOrderedList')">1. Lijst</button>
+          <button class="toolbar-btn" onclick="formatBlock('h2')">Kop</button>
+          <button class="toolbar-btn" onclick="formatBlock('p')">Tekst</button>
+        </div>
+
+        <!-- Editor -->
+        <div id="editor" class="editor-body" contenteditable="true"></div>
+
+        <div style="display:flex; gap:8px; margin-top:8px;">
+          <button class="btn btn-primary" onclick="slaanOp()">Opslaan</button>
+          <a onclick="history.back()" class="btn btn-ghost" style="cursor:pointer;">Annuleren</a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/nav.js"></script>
+  <script>
+    function format(cmd) {
+      document.execCommand(cmd, false, null);
+      document.getElementById('editor').focus();
+    }
+
+    function formatBlock(tag) {
+      document.execCommand('formatBlock', false, tag);
+      document.getElementById('editor').focus();
+    }
+
+    function slaanOp() {
+      const titel = document.getElementById('nb-titel').value.trim();
+      const inhoud = document.getElementById('editor').innerHTML.trim();
+      if (!titel) return;
+
+      const brieven = JSON.parse(localStorage.getItem('nieuwsbrieven') || '[]');
+      brieven.push({
+        titel,
+        inhoud,
+        datum: new Date().toLocaleDateString('nl-NL', { day: 'numeric', month: 'short', year: 'numeric' })
+      });
+      localStorage.setItem('nieuwsbrieven', JSON.stringify(brieven));
+
+      history.back();
+    }
+  </script>
+</body>
+
+</html>

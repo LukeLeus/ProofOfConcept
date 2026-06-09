@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ContentKit — Project</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    /* ---- Terugknop ---- */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      margin-bottom: 16px;
+      transition: color 0.15s;
+    }
+
+    .back-link:hover {
+      color: var(--text-primary);
+    }
+
+    /* ---- Project header (naam + fase nr + kleine balk) ---- */
+    .project-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .project-header h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--blue);
+      margin-bottom: 2px;
+    }
+
+    .project-fase-label {
+      font-size: 16px;
+      color: var(--text-secondary);
+    }
+
+    /* ---- Klikbare fasebalk ---- */
+    .fase-balk-wrap {
+      margin-bottom: 6px;
+    }
+
+    .fase-segmenten {
+      display: flex;
+      gap: 5px;
+      height: 9px;
+      margin-bottom: 6px;
+    }
+
+    .fase-seg {
+      flex: 1;
+      border-radius: 100px;
+      cursor: pointer;
+      opacity: 0.3;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+
+    .fase-seg.actief {
+      opacity: 1;
+    }
+
+    .fase-seg:hover {
+      opacity: 0.75;
+      transform: scaleY(1.3);
+    }
+
+    .fase-labels {
+      display: flex;
+      margin-bottom: 4px;
+    }
+
+    .fase-lbl {
+      flex: 1;
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: center;
+      cursor: pointer;
+      padding: 2px 0;
+      transition: color 0.15s;
+      font-weight: 500;
+    }
+
+    .fase-lbl:hover {
+      color: var(--text-secondary);
+    }
+
+    .fase-lbl.huidig {
+      color: var(--blue);
+      font-weight: 700;
+    }
+
+    /* ---- Fase omschrijving ---- */
+    .fase-omschrijving {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-style: italic;
+      min-height: 18px;
+      transition: opacity 0.2s;
+    }
+
+    /* ---- Tools grid ---- */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+
+    .tool-kaart {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.14s, border-color 0.14s;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .tool-kaart:hover {
+      background: var(--border);
+    }
+
+    .tool-icoon {
+      font-size: 16px;
+    }
+
+    /* ---- Sectie raster ---- */
+    .sections-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .section-block {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* ---- Lijstitems ---- */
+    .list-item {
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 13px;
+    }
+
+    .list-item-title {
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    .list-item-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .todo-list-item {
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .todo-circle {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid var(--text-muted);
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+
+    .todo-circle:hover {
+      border-color: var(--accent);
+    }
+
+    /* ---- Nieuwsbrief thumbnails ---- */
+    .nieuwsbrief-scroll {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .nieuwsbrief-thumb {
+      min-width: 200px;
+      height: 260px;
+      background: var(--card-bg);
+      border-radius: 10px;
+      overflow: hidden;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .nieuwsbrief-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .todo-check.klaar {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .todo-check.klaar::after {
+      content: '✓';
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      height: 100%;
+    }
+
+    .todo-item.klaar .todo-title {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+
+    .section-block .todo-item {
+      padding: 10px 14px;
+      font-size: 13px;
+    }
+
+    .section-block .todo-title {
+      font-size: 13px;
+    }
+
+    .section-block .todo-project {
+      font-size: 11px;
+    }
+
+    .section-block .todo-check {
+      width: 16px;
+      height: 16px;
+    }
+
+    .section-block .todo-date {
+      font-size: 11px;
+    }
+
+    .section-block>div:first-child {
+      min-height: 48px;
+      align-items: center;
+    }
+  </style>
+</head>
+
+<body data-page="project-zlm">
+
+  <div class="app-shell">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <a href="../index.html" class="sidebar-logo" style="text-decoration:none; color:var(--accent);">Dashboard</a>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Projecten</div>
+        <a href="project-libema.html" class="sidebar-item" data-target="project-libema">Libéma open</a>
+        <a href="project.html" class="sidebar-item active" data-target="project-zlm">ZLM Tour</a>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label tools">Tools</div>
+        <a href="inspiratie.html" class="sidebar-item" data-target="inspiratie">Inspiratie</a>
+        <a href="trendwatcher.html" class="sidebar-item" data-target="trendwatcher">Trendwatcher</a>
+        <a href="analyse.html" class="sidebar-item" data-target="analyse">Analyse</a>
+        <a href="test-doelgroep/index.html" class="sidebar-item" data-target="test-doelgroep">Test doelgroep</a>
+        <a href="kennis-hub.html" class="sidebar-item" data-target="kennis-hub">Kennis hub</a>
+        <a href="todos.html" class="sidebar-item" data-target="todos">To do's</a>
+      </div>
+    </aside>
+
+    <!-- Hoofdinhoud -->
+    <main class="main">
+
+      <!-- Terugknop -->
+      <a onclick="history.back()" class="back-link">← Terug</a>
+
+      <!-- Project naam + fase + kleine balk -->
+      <div class="project-header">
+        <div>
+          <h1>ZLM Tour</h1>
+          <span class="project-fase-label">Fase: <span id="fase-nr">2</span></span>
+        </div>
+
+        <!-- Klikbare fasebalk (rechts) -->
+        <div style="width: 360px;">
+          <div class="fase-balk-wrap">
+            <div class="fase-segmenten">
+              <div class="fase-seg" id="fs1" style="background:#7B9FC4;" onclick="kiesFase(1)"></div>
+              <div class="fase-seg" id="fs2" style="background:#3A6EA8;" onclick="kiesFase(2)"></div>
+              <div class="fase-seg" id="fs3" style="background:#8BAF7A;" onclick="kiesFase(3)"></div>
+              <div class="fase-seg" id="fs4" style="background:#A8C48A;" onclick="kiesFase(4)"></div>
+            </div>
+            <div class="fase-labels">
+              <div class="fase-lbl" id="fl1" onclick="kiesFase(1)">Oriëntatie</div>
+              <div class="fase-lbl" id="fl2" onclick="kiesFase(2)">Overweging</div>
+              <div class="fase-lbl" id="fl3" onclick="kiesFase(3)">Actie</div>
+              <div class="fase-lbl" id="fl4" onclick="kiesFase(4)">Loyaliteit</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fase omschrijving -->
+      <p class="fase-omschrijving" id="fase-omschrijving"></p>
+
+      <!-- Tools sectie (wisselt per fase) -->
+      <div class="tools-grid" id="tools-grid">
+        <!-- Wordt gevuld door kiesFase() -->
+      </div>
+
+      <!-- Twee-koloms secties grid -->
+      <div class="sections-grid">
+
+        <!-- LINKER KOLOM: TO DO -->
+        <div class="section-block">
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <button class="btn btn-primary">TO DO</button>
+            <a href="todo-toevoegen.html" class="btn btn-ghost" style="font-size:12px; padding:8px 14px;">＋
+              Toevoegen</a>
+            <a href="project-taken.html?project=ZLM%20Tour" class="btn btn-ghost"
+              style="font-size:12px; padding:8px 14px;">Alle to do's →</a>
+          </div>
+          <div style="background:transparent; padding:0;">
+            <div class="todo-item">
+              <div class="todo-check" onclick="vinkAf(this)"></div>
+              <div class="todo-content">
+                <div class="todo-title">Instagram post collab met gemeente</div>
+                <div class="todo-project">ZLM Tour · Jordan</div>
+              </div>
+              <span class="todo-date">Morgen</span>
+              <button onclick="this.closest('.todo-item').remove()"
+                style="background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:16px; margin-left:12px;">✕</button>
+            </div>
+            <div class="todo-item">
+              <div class="todo-check" onclick="vinkAf(this)"></div>
+              <div class="todo-content">
+                <div class="todo-title">Bereik Q2</div>
+                <div class="todo-project">ZLM Tour · Tim</div>
+              </div>
+              <span class="todo-date">Vrijdag</span>
+              <button onclick="this.closest('.todo-item').remove()"
+                style="background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:16px; margin-left:12px;">✕</button>
+            </div>
+            <div class="todo-item">
+              <div class="todo-check" onclick="vinkAf(this)"></div>
+              <div class="todo-content">
+                <div class="todo-title">Story posten</div>
+                <div class="todo-project">ZLM Tour · Luke</div>
+              </div>
+              <span class="todo-date">Vandaag</span>
+              <button onclick="this.closest('.todo-item').remove()"
+                style="background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:16px; margin-left:12px;">✕</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- RECHTER KOLOM: ANALYSE -->
+        <div class="section-block">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <a href="analyse.html" class="btn btn-primary" style="text-decoration:none;">Analyse</a>
+            <a href="Analyse/analyseZLMtour.html" class="btn btn-ghost"
+              style="font-size:12px; padding:8px 14px; text-decoration:none;">Bekijk volledige analyse →</a>
+          </div>
+          <div class="card" id="analyse-preview">
+            <div class="grid-2" style="gap:10px; margin-bottom:0;">
+              <div style="background:var(--bg); border-radius:8px; padding:12px;">
+                <div style="font-size:11px; color:var(--text-muted); margin-bottom:4px;">Views</div>
+                <div style="font-size:20px; font-weight:700;">64.3k</div>
+                <div style="font-size:11px; color:var(--green);">+140.3%</div>
+              </div>
+              <div style="background:var(--bg); border-radius:8px; padding:12px;">
+                <div style="font-size:11px; color:var(--text-muted); margin-bottom:4px;">Interactions</div>
+                <div style="font-size:20px; font-weight:700;">786</div>
+                <div style="font-size:11px; color:var(--green);">+110.8%</div>
+              </div>
+              <div style="background:var(--bg); border-radius:8px; padding:12px;">
+                <div style="font-size:11px; color:var(--text-muted); margin-bottom:4px;">Visits</div>
+                <div style="font-size:20px; font-weight:700;">1.5K</div>
+                <div style="font-size:11px; color:var(--green);">+308.7%</div>
+              </div>
+              <div style="background:var(--bg); border-radius:8px; padding:12px;">
+                <div style="font-size:11px; color:var(--text-muted); margin-bottom:4px;">Follows</div>
+                <div style="font-size:20px; font-weight:700;">56</div>
+                <div style="font-size:11px; color:var(--green);">+20%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LINKER KOLOM: TEAM -->
+        <div class="section-block">
+          <button class="btn btn-primary" style="align-self:flex-start;">Team</button>
+          <div class="card">
+            <div class="list-item">
+              <div class="list-item-title">Niels</div>
+              <div class="list-item-sub">Videograaf</div>
+            </div>
+            <div class="list-item mt-8">
+              <div class="list-item-title">Luke</div>
+              <div class="list-item-sub">Stagaire</div>
+            </div>
+            <div class="list-item mt-8">
+              <div class="list-item-title">Anoek</div>
+              <div class="list-item-sub">Designer</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PARTNERS -->
+        <div class="section-block">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <button class="btn btn-primary">Partners</button>
+            <button class="btn btn-ghost" style="font-size:12px; padding:8px 14px;"
+              onclick="document.getElementById('partner-form').style.display='flex'">＋ Partner toevoegen</button>
+            <a href="project-partners.html" class="btn btn-ghost" style="font-size:12px; padding:8px 14px;">Alle
+              Partners →</a>
+          </div>
+
+          <div class="card" style="min-height:220px;">
+
+            <div id="partners-lijst" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
+              <div
+                style="position:relative; display:flex; flex-direction:column; gap:2px; padding:10px 14px; background:var(--bg); border-radius:10px; min-width:160px;">
+                <span style="font-size:13px; font-weight:600;">Vriendenloterij</span>
+                <span style="font-size:11px; color:var(--text-muted);">Subsponsor</span>
+                <button onclick="verwijderPartner(this)"
+                  style="position:absolute; top:6px; right:8px; background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:12px;">✕</button>
+              </div>
+            </div>
+
+            <!-- Toevoeg formulier -->
+            <div id="partner-form" style="display:none; flex-direction:column; gap:8px; margin-top:8px;">
+              <input type="text" id="partner-naam" placeholder="Naam partner"
+                style="padding:8px 12px; border-radius:8px; border:1px solid var(--border); font-family:inherit; font-size:13px; background:var(--bg);">
+              <input type="text" id="partner-rol" placeholder="Rol (bijv. Hoofdsponsor)"
+                style="padding:8px 12px; border-radius:8px; border:1px solid var(--border); font-family:inherit; font-size:13px; background:var(--bg);">
+              <div style="display:flex; gap:8px;">
+                <button class="btn btn-primary" style="font-size:13px; padding:8px 16px;"
+                  onclick="voegPartnerToe()">Toevoegen</button>
+                <button class="btn btn-ghost" style="font-size:13px; padding:8px 16px;"
+                  onclick="document.getElementById('partner-form').style.display='none'">Annuleren</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div><!-- /sections-grid -->
+
+      <!-- NIEUWSBRIEF -->
+      <div class="mt-32">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
+          <button class="btn btn-primary">Nieuwsbrief</button>
+          <a href="nieuwsbrief-toevoegen.html" class="btn btn-ghost" style="font-size:12px; padding:8px 14px;">＋ Nieuwe
+            nieuwsbrief</a>
+        </div>
+        <div class="nieuwsbrief-scroll">
+          <div class="nieuwsbrief-thumb img-placeholder"><span>Nieuwsbrief 1</span></div>
+          <div class="nieuwsbrief-thumb img-placeholder"><span>Nieuwsbrief 2</span></div>
+          <div class="nieuwsbrief-thumb img-placeholder"><span>Nieuwsbrief 3</span></div>
+          <div class="nieuwsbrief-thumb img-placeholder"><span>Nieuwsbrief 4</span></div>
+          <div class="nieuwsbrief-thumb img-placeholder"><span>Nieuwsbrief 5</span></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="../js/nav.js"></script>
+  <script>
+    function verwijderBrief(index, el) {
+      const brieven = JSON.parse(localStorage.getItem('nieuwsbrieven') || '[]');
+      brieven.splice(index, 1);
+      localStorage.setItem('nieuwsbrieven', JSON.stringify(brieven));
+      el.closest('.nieuwsbrief-thumb').remove();
+    }
+
+    function vinkAf(el) {
+      el.classList.toggle('klaar');
+      const item = el.closest('.todo-item');
+      item.classList.toggle('klaar');
+
+      const titel = item.querySelector('.todo-title').textContent;
+      const afgevinkt = JSON.parse(localStorage.getItem('afgevinkt') || '[]');
+      if (item.classList.contains('klaar')) {
+        if (!afgevinkt.includes(titel)) afgevinkt.push(titel);
+        // Verwijder na korte animatie
+        setTimeout(() => item.style.display = 'none', 400);
+      } else {
+        afgevinkt.splice(afgevinkt.indexOf(titel), 1);
+        item.style.display = '';
+      }
+      localStorage.setItem('afgevinkt', JSON.stringify(afgevinkt));
+    }
+
+    const faseData = {
+      1: {
+        label: 'Oriëntatie',
+        omschrijving: 'Tip: Focus op bewustwording en bereik. Gebruik brede formats en zorg voor consistentie in tone of voice.',
+        tools: [
+          { i: '', n: 'Inspiratie', href: 'inspiratie.html' },
+          { i: '', n: 'Doelgroep testen', href: 'test-doelgroep/verg-stap-1-project.html?project=ZLM%20Tour' },
+          { i: '', n: 'Trendwatcher', href: 'trendwatcher.html' },
+        ]
+      },
+      2: {
+        label: 'Overweging',
+        omschrijving: 'Tip: Verdiep de verbinding met je doelgroep. Gebruik engagement-formats, polls en informatieve content.',
+        tools: [
+          { i: '', n: 'Analyse', href: 'analyse.html' },
+          { i: '', n: 'Inspiratie', href: 'inspiratie.html' },
+          { i: '', n: 'Content plan', href: null },
+        ]
+      },
+      3: {
+        label: 'Actie',
+        omschrijving: "Tip: Stuur op conversie. Gebruik duidelijke CTA's, urgentie en social proof.",
+        tools: [
+          { i: '', n: 'CTA generator', href: null },
+          { i: '', n: 'Analyse', href: 'analyse.html' },
+        ]
+      },
+      4: {
+        label: 'Loyaliteit',
+        omschrijving: 'Tip: Bind je publiek. Stimuleer ambassadeurs, deel behind-the-scenes en bouw een community.',
+        tools: [
+          { i: '', n: 'Analyse', href: 'analyse.html' },
+          { i: '', n: 'Doelgroep testen', href: 'test-doelgroep/verg-stap-1-project.html?project=ZLM%20Tour' },
+          { i: '', n: 'Nieuwsbrief', href: null },
+        ]
+      }
+    };
+
+    /* Startfase — pas aan per project (1, 2, 3 of 4) */
+    const startFase = 2;
+
+    function kiesFase(nr) {
+      /* Segmenten actief/inactief */
+      for (let i = 1; i <= 4; i++) {
+        document.getElementById('fs' + i).classList.toggle('actief', i === nr);
+        document.getElementById('fl' + i).classList.toggle('huidig', i === nr);
+      }
+
+      /* Fase nummer in header */
+      document.getElementById('fase-nr').textContent = nr;
+
+      /* Omschrijving */
+      document.getElementById('fase-omschrijving').textContent = faseData[nr].omschrijving;
+
+      /* Tools grid opnieuw renderen */
+      const grid = document.getElementById('tools-grid');
+      grid.innerHTML = faseData[nr].tools.map(t => {
+        const tag = t.href ? 'a' : 'div';
+        const href = t.href ? `href="${t.href}"` : '';
+        return `<${tag} class="tool-kaart" ${href}>
+          <span class="tool-icoon">${t.i}</span>
+          ${t.n}
+        </${tag}>`;
+      }).join('');
+    }
+
+    /* Initialiseer op startfase */
+    kiesFase(startFase);
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const brieven = JSON.parse(localStorage.getItem('nieuwsbrieven') || '[]');
+      const scroll = document.querySelector('.nieuwsbrief-scroll');
+
+      brieven.forEach((b, index) => {
+        const thumb = document.createElement('div');
+        thumb.className = 'nieuwsbrief-thumb';
+        thumb.style.cursor = 'pointer';
+        thumb.style.flexDirection = 'column';
+        thumb.style.justifyContent = 'space-between';
+        thumb.style.padding = '10px';
+        thumb.style.position = 'relative';
+        thumb.innerHTML = `
+    <button onclick="verwijderBrief(${index}, this)" style="position:absolute; top:6px; right:6px; background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:14px;">✕</button>
+    <div style="flex:1;"></div>
+    <div style="font-size:11px; font-weight:600; color:var(--text-primary);">${b.titel}</div>
+    <div style="font-size:10px; color:var(--text-muted);">${b.datum}</div>
+  `;
+        scroll.insertBefore(thumb, scroll.firstChild);
+      });
+    });
+
+    function voegPartnerToe() {
+      const naam = document.getElementById('partner-naam').value.trim();
+      const rol = document.getElementById('partner-rol').value.trim();
+      if (!naam) return;
+
+      const div = document.createElement('div');
+      div.style.cssText = 'position:relative; display:flex; flex-direction:column; gap:2px; padding:10px 14px; background:var(--bg); border-radius:10px; min-width:160px;';
+      div.innerHTML = `
+    <span style="font-size:13px; font-weight:600;">${naam}</span>
+    <span style="font-size:11px; color:var(--text-muted);">${rol}</span>
+    <button onclick="verwijderPartner(this)" style="position:absolute; top:6px; right:8px; background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:12px;">✕</button>
+  `;
+
+      document.getElementById('partners-lijst').appendChild(div);
+      document.getElementById('partner-naam').value = '';
+      document.getElementById('partner-rol').value = '';
+      document.getElementById('partner-form').style.display = 'none';
+    }
+
+    function verwijderPartner(btn) {
+      btn.closest('div[style]').remove();
+    }
+
+    // Sla hard-coded taken op in localStorage zodat project-taken.html ze kan tonen
+    document.addEventListener('DOMContentLoaded', () => {
+      const projectNaam = 'ZLM Tour'; // ← pas aan per project bestand
+      const hardcoded = [
+        { titel: 'Instagram post collab met gemeente', project: projectNaam, teamlid: 'Jordan', datum: 'Morgen', beschrijving: '' },
+        { titel: 'Bereik Q2', project: projectNaam, teamlid: 'Tim', datum: 'Vrijdag', beschrijving: '' },
+        { titel: 'Story posten', project: projectNaam, teamlid: 'Luke', datum: 'Vandaag', beschrijving: '' },
+      ];
+
+      const taken = JSON.parse(localStorage.getItem('taken') || '[]');
+
+      hardcoded.forEach(t => {
+        // Voeg alleen toe als hij er nog niet in zit
+        if (!taken.find(x => x.titel === t.titel && x.project === t.project)) {
+          taken.push(t);
+        }
+      });
+
+      localStorage.setItem('taken', JSON.stringify(taken));
+    });
+
+    // Team dynamisch laden
+    const teamPerProjectZLM = JSON.parse(localStorage.getItem('teamPerProject') || '{}');
+    const teamledenZLM = teamPerProjectZLM['ZLM Tour'] || ['Niels', 'Luke', 'Anoek'];
+    const alleCards = document.querySelectorAll('.section-block .card');
+    const teamKaartZLM = alleCards[1]; // tweede card = team
+
+    if (teamKaartZLM) {
+      teamKaartZLM.innerHTML = teamledenZLM.map(l => `
+    <div class="list-item" style="margin-bottom:8px;">
+      <div class="list-item-title">${l}</div>
+      <div class="list-item-sub">Teamlid</div>
+    </div>
+  `).join('');
+    }
+  </script>
+</body>
+
+</html>
