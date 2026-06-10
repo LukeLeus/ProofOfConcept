@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ContentKit — Project toevoegen</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<style>
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 14px;
+        color: var(--text-secondary);
+        text-decoration: none;
+        margin-bottom: 24px;
+        transition: color 0.15s;
+    }
+
+    .back-link:hover {
+        color: var(--text-primary);
+    }
+</style>
+
+<body data-page="home">
+
+    <div class="app-shell">
+        <aside class="sidebar">
+            <a href="../index.html" class="sidebar-logo"
+                style="text-decoration:none; color:var(--accent);">Dashboard</a>
+            <div class="sidebar-section">
+                <div class="sidebar-label">Projecten</div>
+                <a href="project-libema.html" class="sidebar-item">Libéma open</a>
+                <a href="project.html" class="sidebar-item">ZLM Tour</a>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-label tools">Tools</div>
+                <a href="inspiratie.html" class="sidebar-item">Inspiratie</a>
+                <a href="trendwatcher.html" class="sidebar-item">Trendwatcher</a>
+                <a href="analyse.html" class="sidebar-item">Analyse</a>
+                <a href="test-doelgroep/index.html" class="sidebar-item">Test doelgroep</a>
+                <a href="kennis-hub.html" class="sidebar-item">Kennis hub</a>
+                <a href="todos.html" class="sidebar-item" data-target="todos">To do's</a>
+            </div>
+        </aside>
+
+        <main class="main">
+            <a onclick="history.back()" class="back-link">← Terug</a>
+            <h1 class="page-title">Project toevoegen</h1>
+
+            <div style="max-width: 560px; display:flex; flex-direction:column; gap:12px;">
+
+                <input type="text" id="project-naam" placeholder="Projectnaam"
+                    style="padding:12px 16px; border-radius:10px; border:1px solid var(--border); font-family:inherit; font-size:15px; background:var(--bg);">
+
+                <textarea id="project-beschrijving" placeholder="Beschrijving (optioneel)"
+                    style="padding:12px 16px; border-radius:10px; border:1px solid var(--border); font-family:inherit; font-size:15px; background:var(--bg); resize:vertical; min-height:80px;"></textarea>
+
+                <select id="project-fase"
+                    style="padding:12px 16px; border-radius:10px; border:1px solid var(--border); font-family:inherit; font-size:15px; background:var(--bg);">
+                    <option value="1">Fase 1 — Oriëntatie</option>
+                    <option value="2">Fase 2 — Overweging</option>
+                    <option value="3">Fase 3 — Actie</option>
+                    <option value="4">Fase 4 — Loyaliteit</option>
+                </select>
+
+                <div id="teamleden-sectie" style="display:flex; gap:8px; flex-direction:column;">
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:4px;">Teamleden</p>
+                    <div id="teamleden-lijst"></div>
+                    <div style="display:flex; gap:8px;">
+                        <input type="text" id="nieuw-teamlid" placeholder="Naam teamlid"
+                            style="padding:10px 14px; border-radius:10px; border:1px solid var(--border); font-family:inherit; font-size:14px; background:var(--bg); flex:1;">
+                        <button class="btn btn-primary" onclick="voegTeamlidToe()" style="padding:10px 16px;">＋</button>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:8px; margin-top:8px;">
+                    <button class="btn btn-primary" onclick="slaanOp()">Opslaan</button>
+                    <a href="../index.html" class="btn btn-ghost">Annuleren</a>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/project-toevoegen.js"></script>
+    <script src="../js/nav.js"></script>
+</body>
+
+</html>

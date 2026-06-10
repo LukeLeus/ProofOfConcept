@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ContentKit — Vergelijk · Inspiratie</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <style>
+    .vergelijk-header-bar { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; }
+    .projecten-vergelijk-badge {
+      display:flex; align-items:center; gap:8px;
+      background:var(--card-bg); border-radius:100px; padding:8px 16px; font-size:13px;
+    }
+    .pv-naam { font-weight:600; }
+    .pv-vs { color:var(--text-muted); font-size:12px; }
+    .voortgang { display:flex; gap:6px; margin-bottom:28px; max-width:860px; }
+    .vp-stap { height:4px; flex:1; border-radius:100px; background:var(--border); }
+    .vp-stap.klaar { background:var(--accent); opacity:0.4; }
+    .vp-stap.actief { background:var(--accent); }
+    .stap-header { display:flex; align-items:center; gap:12px; margin-bottom:8px; }
+    .stap-badge { font-size:12px; font-weight:600; color:var(--accent); background:rgba(255,85,51,0.1); padding:4px 10px; border-radius:100px; }
+    .filter-rij { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; max-width:860px; }
+    .filter-chip { padding:6px 14px; border-radius:100px; border:1.5px solid var(--border); font-size:12px; cursor:pointer; background:var(--bg); transition:border-color 0.12s, background 0.12s; }
+    .filter-chip:hover { border-color:var(--accent); }
+    .filter-chip.actief { border-color:var(--accent); background:rgba(255,85,51,0.07); color:var(--accent); font-weight:600; }
+    .inspiratie-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; max-width:860px; margin-bottom:32px; }
+    .inspiratie-card {
+      background:var(--card-bg); border-radius:14px; overflow:hidden;
+      cursor:pointer; transition:transform 0.12s, box-shadow 0.12s;
+      border:2px solid transparent;
+    }
+    .inspiratie-card:hover { transform:translateY(-2px); box-shadow:0 4px 16px rgba(0,0,0,0.08); }
+    .inspiratie-card.opgeslagen { border-color:var(--accent); }
+    .inspiratie-thumb {
+      width:100%; aspect-ratio:4/3; background:var(--border);
+      display:flex; align-items:center; justify-content:center;
+      font-size:32px; position:relative;
+    }
+    .inspiratie-platform { position:absolute; top:8px; right:8px; background:white; border-radius:6px; padding:2px 6px; font-size:11px; }
+    .inspiratie-stats { position:absolute; bottom:8px; left:8px; display:flex; gap:8px; }
+    .inspiratie-stat { background:rgba(0,0,0,0.5); color:white; font-size:11px; padding:2px 6px; border-radius:4px; }
+    .inspiratie-body { padding:12px 14px; }
+    .inspiratie-account { font-size:12px; font-weight:700; margin-bottom:4px; }
+    .inspiratie-tekst { font-size:12px; color:var(--text-secondary); line-height:1.4; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+    .inspiratie-tag { font-size:11px; color:var(--accent); font-weight:600; margin-top:6px; }
+    .inspiratie-acties { display:flex; gap:6px; padding:0 14px 12px; }
+    .btn-opslaan { font-size:11px; padding:5px 10px; border-radius:6px; border:1.5px solid var(--border); background:var(--bg); cursor:pointer; font-family:'DM Sans',sans-serif; transition:border-color 0.12s; }
+    .btn-opslaan:hover { border-color:var(--accent); color:var(--accent); }
+    .btn-opslaan.actief { border-color:var(--accent); color:var(--accent); background:rgba(255,85,51,0.06); }
+    .laden-grid { grid-column:span 3; display:flex; flex-direction:column; align-items:center; padding:48px 0; gap:16px; }
+    .laden-spinner { width:36px; height:36px; border:3px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin 0.8s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .actie-rij { display:flex; gap:10px; max-width:860px; }
+  </style>
+</head>
+<body data-page="test-doelgroep">
+<div class="app-shell">
+  <aside class="sidebar">
+    <a href="../../index.html" class="sidebar-logo" style="text-decoration:none; color:var(--accent);">Dashboard</a>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Projecten</div>
+      <a href="../project-libema.html" class="sidebar-item">Libéma open</a>
+      <a href="../project.html" class="sidebar-item">ZLM Tour</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label tools">Tools</div>
+      <a href="../inspiratie.html" class="sidebar-item">Inspiratie</a>
+      <a href="../hooks.html" class="sidebar-item">Hooks</a>
+      <a href="../trendwatcher.html" class="sidebar-item">Trendwatcher</a>
+      <a href="../analyse.html" class="sidebar-item">Analyse</a>
+      <a href="index.html" class="sidebar-item active">Test doelgroep</a>
+      <a href="../kennis-hub.html" class="sidebar-item">Kennis hub</a>
+      <a href="../todos.html" class="sidebar-item">To do's</a>
+    </div>
+  </aside>
+  <main class="main">
+    <a onclick="history.back()" class="back-link">← Terug</a>
+    <div class="vergelijk-header-bar">
+      <div>
+        <div class="stap-header">
+          <span class="stap-badge">Stap 3 van 3</span>
+          <span style="font-size:13px; color:var(--text-muted);">Doelgroep vergelijken</span>
+        </div>
+        <h1 class="page-title" style="margin-bottom:4px;">Inspiratie</h1>
+        <p class="page-subtitle" id="subtitel">Content die goed werkt bij een vergelijkbare doelgroep.</p>
+      </div>
+      <div class="projecten-vergelijk-badge">
+        <span class="pv-naam" id="badge-eigen">—</span>
+        <span class="pv-vs">vs</span>
+        <span class="pv-naam" id="badge-vergelijk">—</span>
+      </div>
+    </div>
+    <div class="voortgang">
+      <div class="vp-stap klaar"></div>
+      <div class="vp-stap klaar"></div>
+      <div class="vp-stap actief"></div>
+    </div>
+    <div class="filter-rij">
+      <div class="filter-chip actief" onclick="filterContent(this, 'alle')">Alle</div>
+      <div class="filter-chip" onclick="filterContent(this, 'video')">🎥 Video</div>
+      <div class="filter-chip" onclick="filterContent(this, 'carousel')">🔄 Carousel</div>
+      <div class="filter-chip" onclick="filterContent(this, 'foto')">📷 Foto</div>
+      <div class="filter-chip" onclick="filterContent(this, 'story')">⚡ Story</div>
+    </div>
+    <div class="inspiratie-grid" id="inspiratie-grid">
+      <div class="laden-grid">
+        <div class="laden-spinner"></div>
+        <div style="font-size:14px; color:var(--text-secondary);" id="laden-tekst">Inspiratie wordt gezocht…</div>
+      </div>
+    </div>
+    <div class="actie-rij">
+      <a href="verg-stap-2-vergelijk.html" class="btn btn-ghost">← Ander project kiezen</a>
+      <a href="verg-stap-1-project.html" class="btn btn-ghost">Opnieuw beginnen</a>
+      <a href="index.html" class="btn btn-primary">Klaar</a>
+    </div>
+  </main>
+</div>
+<script src="../../js/nav.js"></script>
+<script>
+  const eigenProject     = sessionStorage.getItem('verg_eigen') || '—';
+  const eigenIcon        = sessionStorage.getItem('verg_eigen_icon') || '📁';
+  const vergelijkProject = sessionStorage.getItem('verg_vergelijk') || '—';
+  const vergelijkIcon    = sessionStorage.getItem('verg_vergelijk_icon') || '📌';
+
+  document.getElementById('badge-eigen').textContent = eigenIcon + ' ' + eigenProject;
+  document.getElementById('badge-vergelijk').textContent = vergelijkIcon + ' ' + vergelijkProject;
+
+  const laadTexten = ['Inspiratie wordt gezocht…', 'Populaire content wordt geanalyseerd…', 'Toepasselijke posts worden gefilterd…'];
+  let laadIdx = 0;
+  const laadInterval = setInterval(() => {
+    laadIdx = (laadIdx + 1) % laadTexten.length;
+    const el = document.getElementById('laden-tekst');
+    if (el) el.textContent = laadTexten[laadIdx];
+  }, 1400);
+
+  let alleContent = [];
+
+  async function laadInspiratie() {
+    const prompt = `Genereer 6 voorbeelden van social media content die goed presteert bij de doelgroep van "${vergelijkProject}" en ook toepasbaar is voor "${eigenProject}".
+
+Geef ALLEEN JSON terug (geen markdown):
+[
+  {
+    "account": "@accountnaam",
+    "platform": "Instagram of Facebook of TikTok",
+    "type": "video of carousel of foto of story",
+    "tekst": "korte beschrijving van de content max 2 zinnen",
+    "waarom": "waarom dit ook werkt voor ${eigenProject} — max 1 zin",
+    "likes": "bijv 2.4k",
+    "views": "bijv 18k of null als niet van toepassing",
+    "emoji": "één emoji die het visuele concept weergeeft"
+  }
+]`;
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1200,
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+      const data = await res.json();
+      clearInterval(laadInterval);
+      const raw = data.content.map(b => b.text || '').join('');
+      const clean = raw.replace(/```json|```/g, '').trim();
+      alleContent = JSON.parse(clean);
+      renderContent(alleContent);
+    } catch(e) {
+      clearInterval(laadInterval);
+      document.getElementById('inspiratie-grid').innerHTML = `
+        <div style="grid-column:span 3; text-align:center; padding:40px 0; color:var(--text-muted);">
+          <div style="font-size:32px; margin-bottom:12px;">⚠️</div>
+          <div>Inspiratie kon niet worden geladen. Controleer je verbinding.</div>
+          <button onclick="location.reload()" class="btn btn-primary" style="margin-top:20px;">Opnieuw</button>
+        </div>`;
+    }
+  }
+
+  function renderContent(items) {
+    const grid = document.getElementById('inspiratie-grid');
+    grid.innerHTML = items.map((item, i) => `
+      <div class="inspiratie-card" id="card-${i}">
+        <div class="inspiratie-thumb">
+          <span>${item.emoji}</span>
+          <span class="inspiratie-platform">${item.platform}</span>
+          <div class="inspiratie-stats">
+            ${item.views ? `<span class="inspiratie-stat">👁 ${item.views}</span>` : ''}
+            <span class="inspiratie-stat">❤️ ${item.likes}</span>
+          </div>
+        </div>
+        <div class="inspiratie-body">
+          <div class="inspiratie-account">${item.account}</div>
+          <div class="inspiratie-tekst">${item.tekst}</div>
+          <div class="inspiratie-tag">→ ${item.waarom}</div>
+        </div>
+        <div class="inspiratie-acties">
+          <button class="btn-opslaan" id="btn-${i}" onclick="slaanOp(${i})">＋ Opslaan als inspiratie</button>
+          <span style="font-size:11px; padding:5px 6px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em;">${item.type}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function filterContent(el, type) {
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('actief'));
+    el.classList.add('actief');
+    const gefilterd = type === 'alle' ? alleContent : alleContent.filter(i => i.type === type);
+    renderContent(gefilterd);
+  }
+
+  function slaanOp(i) {
+    const btn = document.getElementById('btn-' + i);
+    const card = document.getElementById('card-' + i);
+    btn.classList.toggle('actief');
+    card.classList.toggle('opgeslagen');
+    btn.textContent = card.classList.contains('opgeslagen') ? '✓ Opgeslagen' : '＋ Opslaan als inspiratie';
+  }
+
+  laadInspiratie();
+</script>
+</body>
+</html>

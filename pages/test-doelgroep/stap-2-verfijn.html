@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ContentKit — Test doelgroep · Verfijn doelgroep</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <style>
+    .stap-header { display:flex; align-items:center; gap:12px; margin-bottom:8px; }
+    .stap-badge { font-size:12px; font-weight:600; color:var(--accent); background:rgba(255,85,51,0.1); padding:4px 10px; border-radius:100px; }
+    .voortgang { display:flex; gap:6px; margin-bottom:32px; }
+    .vp-stap { height:4px; flex:1; border-radius:100px; background:var(--border); }
+    .vp-stap.actief { background:var(--accent); }
+    .vp-stap.klaar  { background:var(--accent); opacity:0.4; }
+
+    .segment-pill { display:inline-flex; align-items:center; gap:6px; background:var(--card-bg); padding:6px 14px; border-radius:100px; font-size:13px; color:var(--text-secondary); margin-bottom:28px; }
+
+    .filters-wrap { max-width:680px; display:flex; flex-direction:column; gap:28px; }
+    .filter-groep { display:flex; flex-direction:column; gap:10px; }
+    .filter-label { font-size:14px; font-weight:600; color:var(--text-primary); }
+    .filter-opties { display:flex; flex-wrap:wrap; gap:8px; }
+    .filter-chip {
+      padding:8px 18px; border-radius:100px; border:1.5px solid var(--border);
+      font-size:13px; cursor:pointer; background:var(--bg);
+      transition:border-color 0.12s, background 0.12s, color 0.12s;
+      user-select:none;
+    }
+    .filter-chip:hover { border-color:var(--accent); }
+    .filter-chip.actief { border-color:var(--accent); background:rgba(255,85,51,0.08); color:var(--accent); font-weight:600; }
+
+    .divider { height:1px; background:var(--border); max-width:680px; }
+    .actie-rij { display:flex; gap:10px; margin-top:32px; max-width:680px; }
+    .skip-link { font-size:13px; color:var(--text-muted); align-self:center; cursor:pointer; margin-left:4px; }
+    .skip-link:hover { color:var(--text-secondary); }
+  </style>
+</head>
+<body data-page="test-doelgroep">
+<div class="app-shell">
+  <aside class="sidebar">
+    <a href="../../index.html" class="sidebar-logo" style="text-decoration:none; color:var(--accent);">Dashboard</a>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Projecten</div>
+      <a href="../project-libema.html" class="sidebar-item">Libéma open</a>
+      <a href="../project.html" class="sidebar-item">ZLM Tour</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label tools">Tools</div>
+      <a href="../inspiratie.html" class="sidebar-item">Inspiratie</a>
+      <a href="../trendwatcher.html" class="sidebar-item">Trendwatcher</a>
+      <a href="../analyse.html" class="sidebar-item">Analyse</a>
+      <a href="index.html" class="sidebar-item active">Test doelgroep</a>
+      <a href="../kennis-hub.html" class="sidebar-item">Kennis hub</a>
+      <a href="../todos.html" class="sidebar-item">To do's</a>
+    </div>
+  </aside>
+
+  <main class="main">
+    <a onclick="history.back()" class="back-link">← Terug</a>
+
+    <div class="stap-header">
+      <span class="stap-badge">Stap 2 van 4</span>
+      <span style="font-size:13px; color:var(--text-muted);">Persona testen</span>
+    </div>
+    <h1 class="page-title">Verfijn doelgroep</h1>
+    <p class="page-subtitle">Specificeer wie binnen dit segment je wil aanspreken.</p>
+
+    <div class="voortgang">
+      <div class="vp-stap klaar"></div>
+      <div class="vp-stap actief"></div>
+      <div class="vp-stap"></div>
+      <div class="vp-stap"></div>
+    </div>
+
+    <div class="segment-pill" id="segment-pill">📂 —</div>
+
+    <div class="filters-wrap">
+
+      <div class="filter-groep">
+        <div class="filter-label">Leeftijd</div>
+        <div class="filter-opties">
+          <div class="filter-chip" onclick="toggleFilter(this, 'leeftijd', '18-24 jaar')">18 – 24 jaar</div>
+          <div class="filter-chip" onclick="toggleFilter(this, 'leeftijd', '25-34 jaar')">25 – 34 jaar</div>
+          <div class="filter-chip" onclick="toggleFilter(this, 'leeftijd', '35-44 jaar')">35 – 44 jaar</div>
+          <div class="filter-chip" onclick="toggleFilter(this, 'leeftijd', '45-54 jaar')">45 – 54 jaar</div>
+          <div class="filter-chip" onclick="toggleFilter(this, 'leeftijd', '55-64 jaar')">55 – 64 jaar</div>
+          <div class="filter-chip" onclick="toggleFilter(this, 'leeftijd', '65+ jaar')">65+ jaar</div>
+        </div>
+      </div>
+
+      <div class="filter-groep">
+        <div class="filter-label">Geslacht</div>
+        <div class="filter-opties">
+          <div class="filter-chip" onclick="toggleFilter(this, 'geslacht', 'Man')">Man</div>
+          <div class="filter-chip" onclick="toggleFilter(this, 'geslacht', 'Vrouw')">Vrouw</div>
+          <div class="filter-chip" onclick="toggleFilter(this, 'geslacht', 'Alle geslachten')">Alle</div>
+        </div>
+      </div>
+
+      <div class="filter-groep">
+        <div class="filter-label">Markt</div>
+        <div class="filter-opties">
+          <div class="filter-chip" onclick="toggleFilter(this, 'markt', 'Nederlandse markt')">Nederlandse markt</div>
+          <div class="filter-chip" onclick="toggleFilter(this, 'markt', 'Internationaal')">Internationaal</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="actie-rij">
+      <button class="btn btn-primary" onclick="gaNaarStap3()">Volgende →</button>
+      <a href="stap-1-segment.html" class="btn btn-ghost">← Vorige</a>
+      <span class="skip-link" onclick="gaNaarStap3()">Overslaan</span>
+    </div>
+  </main>
+</div>
+
+<script src="../../js/nav.js"></script>
+<script>
+  document.getElementById('segment-pill').textContent = '📂 ' + (sessionStorage.getItem('td_segment_label') || '—');
+
+  // Herstel eventueel eerder gekozen filters
+  ['leeftijd','geslacht','markt'].forEach(groep => {
+    const opgeslagen = sessionStorage.getItem('td_filter_' + groep);
+    if (opgeslagen) {
+      document.querySelectorAll('.filter-chip').forEach(chip => {
+        const waarde = chip.textContent.trim().replace(/\s+/g,' ');
+        if (chip.onclick && chip.onclick.toString().includes(groep) && waarde === opgeslagen) {
+          chip.classList.add('actief');
+        }
+      });
+    }
+  });
+
+  function toggleFilter(el, groep, waarde) {
+    el.closest('.filter-opties').querySelectorAll('.filter-chip').forEach(c => c.classList.remove('actief'));
+    el.classList.add('actief');
+    sessionStorage.setItem('td_filter_' + groep, waarde);
+  }
+
+  function gaNaarStap3() {
+    window.location.href = 'stap-3-content.html';
+  }
+</script>
+</body>
+</html>
